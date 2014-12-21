@@ -55,16 +55,3 @@ ostream& operator<<(ostream & os, MatEle & mat_ele)
     << mat_ele.amplitude;
     return os;
 }
-
-void printFullMatEle(MatEle& mat_ele, vector<State>& statelist)
-{
-    CompactState tempket = statelist[mat_ele.ket].cstate, tempbra = statelist[mat_ele.bra].cstate;
-    for (int i = 0; i < ham.norb; i+=2) {
-        cout<< tempket[i]<<tempket[i+1]<<" ";
-    }
-    cout<<" =>\n";
-    for (int i = 0; i < ham.norb; i+=2) {
-        cout<< tempbra[i]<<tempbra[i+1]<<" ";
-    }
-    cout<<"\n"<<mat_ele.amplitude<<endl;
-}

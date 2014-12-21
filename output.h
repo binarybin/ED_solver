@@ -19,8 +19,7 @@ ostream& operator<<(ostream& os, Orbital& orb);
 ostream& operator<<(ostream& os, const Orbital& orb);
 ostream& operator<<(ostream& os, CompactState& cstate);
 ostream& operator<<(ostream& os, OrbPair& pair);
-ostream& operator<<(ostream & os, MatEle & mat_ele);
-void printFullMatEle(MatEle& mat_ele, vector<State>& statelist);
+ostream& operator<<(ostream& os, MatEle & mat_ele);
 
 
 #endif /* defined(__SPT__output__) */
