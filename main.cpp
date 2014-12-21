@@ -22,6 +22,7 @@ int main(int argc, const char * argv[])
     for (auto k : hilbert_space.getStateMap())
     {
         Interaction interaction(hilbert_space, k.first); //This is the interaction matrix
+        interaction.decorateState();
         interaction.buildKineticMatrix();
         interaction.build2bodyMatrix();
         Solver diagonalize(interaction);
