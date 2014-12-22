@@ -15,12 +15,14 @@
 class Solver
 {
     vector<rs_eigenvector> rs_result;
-    vector<ch_eigenvector> ch_result;
-    vector<double> eigenvalues;
     Interaction &interaction;
     
+    
 public:
-    Solver(Interaction &o_interaction): interaction(o_interaction){}
+    Solver(Interaction &o_interaction, Pxy o_p): interaction(o_interaction), p(o_p){}
+    Pxy p;
+    vector<ch_eigenvector> ch_result;
+    vector<double> eigenvalues;
     void diagonalize()
     {
 //        if(interaction.hilbert_space.ham.vf == 0)
@@ -28,6 +30,12 @@ public:
 //        else
 //            this->chDiagonalize();
         chDiagonalize();
+        cout<<"Result: "<<endl;
+        for (auto it : ch_result)
+        {
+            cout<<it.eigenvalue<<" ";
+        }
+        cout<<endl;
     }
     void rsDiagonalize();
     void chDiagonalize();

@@ -11,7 +11,7 @@
 int *fast_bra_list;
 int *fast_ket_list;
 complex<double> *fast_amp_list;
-size_t fast_size;
+int fast_size;
 
 void matvec(int *size, complex<double> *vec_in, complex<double> *vec_out, bool *add);
 
@@ -28,6 +28,7 @@ void matvec(int *size, complex<double> *vec_in, complex<double> *vec_out, bool *
 void Solver::chDiagonalize()
 {
     fast_size = interaction.matrix.size();
+    cout<<"fast size: "<<fast_size<<endl;
     fast_bra_list = new int [fast_size];
     fast_ket_list = new int [fast_size];
     fast_amp_list = new complex<double> [fast_size];
@@ -42,7 +43,9 @@ void Solver::chDiagonalize()
     }
     
     vector<double> variance;
+    
     lanczos_diag((int)interaction.state_list.size(), interaction.hilbert_space.ham.lanczos_ne, matvec, eigenvalues, variance, ch_result);
+
     delete [] fast_bra_list;
     delete [] fast_ket_list;
     delete [] fast_amp_list;

@@ -18,6 +18,8 @@ void Interaction::decorateState()
         reverse_state_map[cstates[i].to_ulong()] = i;
         state_list.push_back(temp);
     }
+//    for (auto it : state_list)
+//        cout<<it.state_id<<" "<<it.cstate<<endl;
 }
 
 void Interaction::buildKineticMatrix()
@@ -38,10 +40,11 @@ void Interaction::buildKineticMatrix()
                     temp_cstate[i] = 1, temp_cstate[i + 1] = 0;
                 mat_ele.bra = it.state_id;
                 mat_ele.ket = reverse_state_map.at(temp_cstate.to_ulong());
-
+                
                 // Attention: 2 states that we operated on are neighbours with 0
                 // and 1 filling, which means the 2 signs in fermionic second
                 // quantized form are the same and they multiply to 1
+
                 Pxy tempp = hilbert_space.orbital_list[i].p;
                 if (it.cstate[i])
                     mat_ele.amplitude = complex<double>(ham.vf*ham.epsilon_kx*tempp.px,-ham.vf*ham.epsilon_ky*tempp.py)
@@ -51,6 +54,7 @@ void Interaction::buildKineticMatrix()
                     + complex<double>(ham.delta * ham.epsilon_ky*tempp.py, -ham.delta * ham.epsilon_kx * tempp.px);
                 if(abs(real(mat_ele.amplitude))>SmallDouble || abs(imag(mat_ele.amplitude))>SmallDouble)
                     matrix.push_back(mat_ele);
+                
             }
         }
     }
@@ -64,6 +68,7 @@ void Interaction::build2bodyMatrix()
     int count = 0;
     for (auto it : state_list)//go through all states in the list of "states"
     {
+        unordered_map<int, complex<double> > temp_mat_ele_list;
         //for a specific state, take a look at the first element of a pair
         for (int pos1 = 0; pos1 < ham.norb; pos1++) if (it.cstate[pos1])
             for (int pos2 = 0; pos2 < ham.norb; pos2++)if (it.cstate[pos2])
@@ -74,8 +79,8 @@ void Interaction::build2bodyMatrix()
                     vector<OrbPair> possible_pairs = hilbert_space.pair_map.at(totalprop);
                     for (auto it2 : possible_pairs)
                     {
-                        int new1 = hilbert_space.reverse_orbital_map.at(it2.orb1);
-                        int new2 = hilbert_space.reverse_orbital_map.at(it2.orb2);
+                        unsigned long new1 = hilbert_space.reverse_orbital_map.at(it2.orb1);
+                        unsigned long new2 = hilbert_space.reverse_orbital_map.at(it2.orb2);
                         CompactState tempcstate = it.cstate;
                         tempcstate[pos1] = 0;
                         tempcstate[pos2] = 0;
@@ -117,8 +122,9 @@ void Interaction::build2bodyMatrix()
                                 }
                                 
                                 
-                                if(abs(real(amplitude))>SmallDouble || abs(imag(amplitude))>SmallDouble) {
-                                    matrix.push_back(mat_ele);
+                                if(abs(real(amplitude))>SmallDouble || abs(imag(amplitude))>SmallDouble)
+                                {
+                                    temp_mat_ele_list[mat_ele.ket] += mat_ele.amplitude;
                                 }
                                 //dirty block ends
                             }
@@ -158,30 +164,27 @@ void Interaction::build2bodyMatrix()
                                 }
                                 
                                 
-                                if(abs(real(amplitude))>SmallDouble || abs(imag(amplitude))>SmallDouble) {
-                                    matrix.push_back(mat_ele);
+                                if(abs(real(amplitude))>SmallDouble || abs(imag(amplitude))>SmallDouble)
+                                {
+                                    temp_mat_ele_list[mat_ele.ket] += mat_ele.amplitude;
                                 }
                                 //dirty block ends
                             }
                         }
                     }
                 }
+        for (auto mat_ele_it : temp_mat_ele_list)
+        {
+            MatEle temp(it.state_id, mat_ele_it.first, mat_ele_it.second);
+            matrix.push_back(temp);
+        }
         count++;
         if(count %1000 == 0) cout<<count<<" states finished in part 1"<<endl;
     }
     count = 0;
     for (auto it : state_list)
     {
-        int NbrOccupied = 0;
-        for (int i = 0; i < ham.norb; i++) {
-            if (it.cstate[i]) {
-                NbrOccupied++;
-            }
-        }
-        if (NbrOccupied != ham.nele) {
-            cout<<"Warning: a state with wrong occupation number came into build_interaction_mat"<<endl;
-            continue;
-        }
+        unordered_map<int, complex<double> > temp_mat_ele_list;
         for (int pos1 = 0; pos1 < ham.norb; pos1++) if(!it.cstate[pos1])
             for (int pos2 = 0; pos2 < ham.norb; pos2++) if(!it.cstate[pos2])
                 if(pos2 != pos1)
@@ -191,8 +194,8 @@ void Interaction::build2bodyMatrix()
                     
                     for (auto it2 : possible_pairs)
                     {
-                        int new1 = hilbert_space.reverse_orbital_map.at(it2.orb1);
-                        int new2 = hilbert_space.reverse_orbital_map.at(it2.orb2);
+                        unsigned long new1 = hilbert_space.reverse_orbital_map.at(it2.orb1);
+                        unsigned long new2 = hilbert_space.reverse_orbital_map.at(it2.orb2);
                         CompactState tempcstate = it.cstate;
                         tempcstate[pos1] = 1;
                         tempcstate[pos2] = 1;
@@ -233,7 +236,7 @@ void Interaction::build2bodyMatrix()
                                 }
                                 
                                 if(abs(real(amplitude))>SmallDouble || abs(imag(amplitude))>SmallDouble) {
-                                    matrix.push_back(mat_ele);
+                                    temp_mat_ele_list[mat_ele.ket] += mat_ele.amplitude;
                                 }
                                 //dirty block ends
                             }
@@ -272,16 +275,20 @@ void Interaction::build2bodyMatrix()
                                 }
                                 
                                 if(abs(real(amplitude))>SmallDouble || abs(imag(amplitude))>SmallDouble) {
-                                    matrix.push_back(mat_ele);
+                                    temp_mat_ele_list[mat_ele.ket] += mat_ele.amplitude;
                                 }
                                 //dirty block ends
                             }
                         }
                     }
                 }
+        for (auto mat_ele_it : temp_mat_ele_list)
+        {
+            MatEle temp(it.state_id, mat_ele_it.first, mat_ele_it.second);
+            matrix.push_back(temp);
+        }
         count++;
         if(count %1000 == 0) cout<<count<<" states finished in part 2"<<endl;
     }
 
 }
-

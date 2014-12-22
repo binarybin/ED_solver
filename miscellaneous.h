@@ -11,9 +11,8 @@
 
 #include <bitset>
 #include <complex>
+#include "constants.h"
 using namespace std;
-
-const int MaxOrbital = 32;
 
 struct Pxy
 {
@@ -82,8 +81,8 @@ struct State
 {
     CompactState cstate;
     unsigned state_id;
-    State(CompactState &o_cstate){ cstate = o_cstate; }
-    State(){state_id = 0;}
+    State(CompactState &o_cstate): cstate(o_cstate), state_id(0){}
+    State(): state_id(0){}
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -114,6 +113,7 @@ struct MatEle
     {
         bra = 0, ket = 0, amplitude = 0;
     }
+    MatEle(int b, int k, complex<double> amp) : bra(b), ket(k), amplitude(amp) {}
 };
 
 

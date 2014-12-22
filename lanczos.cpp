@@ -7,6 +7,8 @@
 //
 
 #include "lanczos.h"
+#include <iostream>
+using namespace std;
 
 void lanczos_diag(int dim, int nevec, void (*matvec) (int*, double*, double*, bool*), vector<double>& eigenvalues, vector<double>& variance, vector<rs_eigenvector>& eigenvectors, int maxstep, int report, int seed)
 {
@@ -75,9 +77,10 @@ void lanczos_diag(int dim, int nevec, void (*matvec) (int*, complex<double>  *, 
     int *number;
     double *reso = new double;
     complex<double>  *evec = new complex<double> [nevec * dim];
-    
+    cout<<"right before fortran"<<endl;
     lanczos_diag_ch_(&dim, &nevec, matvec, eval, evec, vari, number, reso, &maxstep, &report, &seed);
-    
+    cout<<"right after fortran"<<endl;
+    cout<<"some results "<<eval[0]<<" "<<eval[1]<<endl;
     eigenvalues.resize(nevec);
     eigenvectors.resize(nevec);
     variance.resize(nevec);

@@ -8,7 +8,6 @@
 
 #include "output.h"
 
-extern Hamiltonian ham;
 ////////////////////////////////////////////////////////////////////////////////
 // Output functions
 ////////////////////////////////////////////////////////////////////////////////
@@ -32,7 +31,7 @@ ostream& operator<<(ostream& os, const Orbital& orb)
 ostream& operator<<(ostream& os, CompactState& cstate)
 {
     
-    for (int i = 0; i < ham.norb; i++)
+    for (int i = 0; i < cstate.size(); i++)
     {
         os<<cstate[i];
     }

@@ -25,9 +25,9 @@ class HilbertSpace
     friend class Solver;
     Hamiltonian &ham;
     vector<Orbital> orbital_list;
-    unordered_map<Orbital, size_t> reverse_orbital_map;
-    unordered_map<Orbital, vector<OrbPair> > pair_map;
-    unordered_map<Pxy, CompactState> state_map;
+    unordered_map<Orbital, size_t, Orbital_hasher> reverse_orbital_map;
+    unordered_map<Orbital, vector<OrbPair>, Orbital_hasher> pair_map;
+    unordered_map<Pxy, vector<CompactState>, Pxy_hasher> state_map;
     
 public:
     HilbertSpace(Hamiltonian &o_ham): ham(o_ham){}
@@ -35,7 +35,7 @@ public:
     void buildReverseOrbitalMap();
     void buildPairMap();
     void buildStateMap();
-    unordered_map<Pxy, CompactState>& getStateMap() {return state_map;}
+    unordered_map<Pxy, vector<CompactState>, Pxy_hasher>& getStateMap() {return state_map;}
     
 private: // some auxiliary functions
     void generateHaldaneOrbList();

@@ -12,8 +12,6 @@ const double pi = 3.14159;
 
 const int MaxOrbital = 32;
 
-const int StateIdShift = 100;
-
 const int MaxLapackSize = 2;
 
 const double SmallDouble = 0.000000001;

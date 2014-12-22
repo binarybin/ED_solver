@@ -12,6 +12,7 @@ void HilbertSpace::buildOrbitalList()
 {
     generateHaldaneOrbList();
     computeFacHaldane();
+    ham.norb = orbital_list.size();
 }
 
 void HilbertSpace::buildReverseOrbitalMap()
@@ -60,15 +61,15 @@ void HilbertSpace::buildStateMap()
 
 void HilbertSpace::generateHaldaneOrbList()
 {
-    size_t norb_max = ham.max_norb;
+    int norb_max = (int)ham.max_norb;
     size_t pbc_type = ham.pbc_type;
     double aspect2 = ham.aspect2;
     bool even1, even2;
     
     vector<Orbital> raworblist;
     
-    for(int i = -(int)norb_max; i < norb_max; i++)
-        for(int j = -(int)norb_max; j< norb_max; j++)
+    for(int i = -norb_max; i < norb_max; i++)
+        for(int j = -norb_max; j< norb_max; j++)
         {
             even1 = (i % 2 == 0);
             even2 = (j % 2 == 0);

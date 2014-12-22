@@ -13,13 +13,13 @@
 
 class Measurement
 {
-    vector<rs_eigenvector> &rs_result;
-    vector<ch_eigenvector> &ch_result;
     HilbertSpace &hilbert_space;
+    Solver &solver;
+    Hamiltonian &ham;
     
 public:
-    Measurement(Solver &solver, HilbertSpace &hilbert_space, Hamiltonian &ham);
-    void measure();
+    Measurement(Solver &o_solver, HilbertSpace &o_hilbert_space, Hamiltonian &o_ham) : hilbert_space(o_hilbert_space), solver(o_solver), ham(o_ham) {}
+    void measure(){}
 };
 
 #endif /* defined(__ED_solver__measurement__) */
