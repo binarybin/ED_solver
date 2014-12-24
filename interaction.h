@@ -12,10 +12,12 @@
 #include "hilbertspace.h"
 
 class Solver;
+class Measurement;
 
 class Interaction
 {
     friend class Solver;
+    friend class Measurement;
     vector<State> state_list;
     unordered_map<unsigned long, unsigned> reverse_state_map;
     

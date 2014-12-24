@@ -17,16 +17,20 @@
 class HilbertSpace;
 class Interaction;
 class Solver;
+class Measurement;
+
 
 class Hamiltonian
 {
     friend class HilbertSpace;
     friend class Interaction;
     friend class Solver;
+    friend class Measurement;
     double U, V1, vf, k0, delta; // interaction parameters
     size_t norb, nele, max_norb, pbc_type; // geometry parameters
     double epsilon_kx, epsilon_ky, aspect2; // geomatry parameters
     int lanczos_ne; // problem parameter
+    int MaxLapackSize;
     
 public:
     void getParameters(); // This method can be overloaded

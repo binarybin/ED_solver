@@ -77,10 +77,8 @@ void lanczos_diag(int dim, int nevec, void (*matvec) (int*, complex<double>  *, 
     int *number;
     double *reso = new double;
     complex<double>  *evec = new complex<double> [nevec * dim];
-    cout<<"right before fortran"<<endl;
     lanczos_diag_ch_(&dim, &nevec, matvec, eval, evec, vari, number, reso, &maxstep, &report, &seed);
-    cout<<"right after fortran"<<endl;
-    cout<<"some results "<<eval[0]<<" "<<eval[1]<<endl;
+    cout<<nevec<<endl;
     eigenvalues.resize(nevec);
     eigenvectors.resize(nevec);
     variance.resize(nevec);

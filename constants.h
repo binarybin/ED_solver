@@ -12,7 +12,7 @@ const double pi = 3.14159;
 
 const int MaxOrbital = 32;
 
-const int MaxLapackSize = 2;
+const int MaxLapackSize = 100;
 
 const double SmallDouble = 0.000000001;
 

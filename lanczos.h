@@ -11,19 +11,8 @@
 
 #include <complex.h>
 #include <vector>
+#include "diag_common.h"
 using namespace std;
-// Structure to store eigenvectors
-struct rs_eigenvector
-{
-	vector<double> eigenvector;
-	double eigenvalue;
-};
-
-struct ch_eigenvector
-{
-	vector<complex<double> > eigenvector;
-	double eigenvalue;
-};
 
 // Lanczos methods with a function pointer input as matrix vector multiplication
 void lanczos_diag(int dim, int nevec, void (*matvec) (int*, double*, double*, bool*), vector<double>& eigenvalues, vector<double>& variance, vector<rs_eigenvector>& eigenvectors, int maxstep=1000, int report=1000, int seed=123456);

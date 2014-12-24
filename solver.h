@@ -11,35 +11,67 @@
 
 #include "interaction.h"
 #include "lanczos.h"
+#include "diag_wrapper.h"
+
+class Measurement;
 
 class Solver
 {
-    vector<rs_eigenvector> rs_result;
+    friend class Measurement;
     Interaction &interaction;
-    
+    bool ch, lapack;
     
 public:
     Solver(Interaction &o_interaction, Pxy o_p): interaction(o_interaction), p(o_p){}
     Pxy p;
     vector<ch_eigenvector> ch_result;
+    vector<rs_eigenvector> rs_result;
     vector<double> eigenvalues;
+
     void diagonalize()
     {
-//        if(interaction.hilbert_space.ham.vf == 0)
-//            this->rsDiagonalize();
-//        else
-//            this->chDiagonalize();
-        chDiagonalize();
-        cout<<"Result: "<<endl;
-        for (auto it : ch_result)
+        if (interaction.hilbert_space.ham.vf == -100)
         {
-            cout<<it.eigenvalue<<" ";
+            ch = false;
+            if (interaction.state_list.size() < interaction.hilbert_space.ham.MaxLapackSize)
+            {
+                rsLapackDiagonalize();
+                lapack = true;
+            }
+            else
+            {
+                rsLanczosDiagonalize();
+                lapack = false;
+            }
         }
-        cout<<endl;
+        else
+        {
+            ch = true;
+            if (interaction.state_list.size() < interaction.hilbert_space.ham.MaxLapackSize)
+            {
+                chLapackDiagonalize();
+                lapack = true;
+            }
+            else
+            {
+                chLanczosDiagonalize();
+                lapack = false;
+            }
+            testNormalization(0);
+            testNormalization(1);
+        }
     }
-    void rsDiagonalize();
-    void chDiagonalize();
+    void rsLanczosDiagonalize(){};
+    void chLanczosDiagonalize();
+    void rsLapackDiagonalize(){};
+    void chLapackDiagonalize();
+    
+    void testEvec(int num);
+    void testNormalization(int num);
+    
 };
+
+ostream& operator<<(ostream &os, ch_eigenvector &ch_result);
 
 void matvec(int *size, complex<double> *vec_in, complex<double> *vec_out, bool *add);
 

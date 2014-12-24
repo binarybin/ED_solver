@@ -20,24 +20,20 @@ int main(int argc, const char * argv[])
     hilbert_space.buildPairMap();
     hilbert_space.buildStateMap();
     
-    vector<Solver> solver_list;
+    vector<Measurement> measure_list;
     for (auto k : hilbert_space.getStateMap())
+    if (k.first == Pxy(0,0))
     {
         cout<<"Sector "<<k.first<<" Dimension: "<<k.second.size()<<endl;
         Interaction interaction(hilbert_space, k.first); //This is the interaction matrix
         interaction.decorateState();
         interaction.buildKineticMatrix();
         interaction.build2bodyMatrix();
-        if (k.second.size() > 100) 
-        {
-            Solver diagonalize(interaction, k.first);
-            diagonalize.diagonalize();
-            Measurement measurement(diagonalize, hilbert_space, ham);
-            measurement.measure();
-            solver_list.push_back(diagonalize);
-        }
-        
-        
+        Solver diagonalize(interaction, k.first);
+        diagonalize.diagonalize();
+        Measurement measurement(diagonalize, hilbert_space, ham);
+        measurement.measure();
+        measure_list.push_back(measurement);
     }
     
     for (auto it : solver_list)
