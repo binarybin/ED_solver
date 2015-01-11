@@ -9,6 +9,7 @@
 #ifndef __ED_solver__solver__
 #define __ED_solver__solver__
 
+#include <algorithm>
 #include "interaction.h"
 #include "lanczos.h"
 #include "diag_wrapper.h"
@@ -20,9 +21,13 @@ class Solver
     friend class Measurement;
     Interaction &interaction;
     bool ch, lapack;
+    size_t Nev;
     
 public:
-    Solver(Interaction &o_interaction, Pxy o_p): interaction(o_interaction), p(o_p){}
+    Solver(Interaction &o_interaction, Pxy o_p): interaction(o_interaction), p(o_p)
+    {
+        Nev = std::min((size_t)interaction.hilbert_space.ham.lanczos_ne, interaction.state_list.size());
+    }
     Pxy p;
     vector<ch_eigenvector> ch_result;
     vector<rs_eigenvector> rs_result;
@@ -57,8 +62,6 @@ public:
                 chLanczosDiagonalize();
                 lapack = false;
             }
-            testNormalization(0);
-            testNormalization(1);
         }
     }
     void rsLanczosDiagonalize(){};

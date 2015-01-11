@@ -18,11 +18,13 @@ using namespace std;
 
 class Interaction;
 class Solver;
+class Measurement;
 
 class HilbertSpace
 {
     friend class Interaction;
     friend class Solver;
+    friend class Measurement;
     Hamiltonian &ham;
     vector<Orbital> orbital_list;
     unordered_map<Orbital, size_t, Orbital_hasher> reverse_orbital_map;

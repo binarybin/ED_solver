@@ -44,7 +44,7 @@ void Solver::chLanczosDiagonalize()
     
     vector<double> variance;
     
-    lanczos_diag((int)interaction.state_list.size(), interaction.hilbert_space.ham.lanczos_ne, matvec, eigenvalues, variance, ch_result);
+    lanczos_diag((int)interaction.state_list.size(), (int)Nev, matvec, eigenvalues, variance, ch_result);
 
     delete [] fast_bra_list;
     delete [] fast_ket_list;
@@ -65,7 +65,7 @@ void Solver::chLapackDiagonalize()
     }
     
     
-    if (!zheevpp(ham_mat, eigenvalues, ch_result, interaction.hilbert_space.ham.lanczos_ne))
+    if (!zheevpp(ham_mat, eigenvalues, ch_result, (int)Nev))
     {
         cout<<"Error while diagonalizing the Hamiltonian using lapack."<<endl;
     }

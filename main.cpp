@@ -7,8 +7,15 @@
 //
 
 #include <iostream>
+#include <iomanip>
 #include "measurement.h"
 #include "output.h"
+
+bool interest(const Pxy & p) // describe the interesting sectors
+{
+    if (p.px == 0 || p.py == 0) return true;
+    else return false;
+}
 
 int main(int argc, const char * argv[])
 {
@@ -22,7 +29,7 @@ int main(int argc, const char * argv[])
     
     vector<Measurement> measure_list;
     for (auto k : hilbert_space.getStateMap())
-    if (k.first == Pxy(0,0))
+    if (interest(k.first))
     {
         cout<<"Sector "<<k.first<<" Dimension: "<<k.second.size()<<endl;
         Interaction interaction(hilbert_space, k.first); //This is the interaction matrix
@@ -36,26 +43,28 @@ int main(int argc, const char * argv[])
         measure_list.push_back(measurement);
     }
     
-    for (auto it : solver_list)
+    for (auto it : measure_list)
     {
         cout<<it.p<<endl;
-        for (auto it2 : it.eigenvalues)
+        for (int i = 0; i < it.eigenvalues.size(); i++)
         {
-            cout<<it2<<" ";
+            cout<<"Eigenvalue: "<<it.eigenvalues[i]<<endl;
+            cout<<"Density: "<<endl;
+            for(auto it3 : it.one_state_results[i].occupation_nbr) cout<<it3<<" ";
+            cout<<endl;
+            cout<<"Form"<<endl;
+            for (int k = 0; k < it.one_state_results[i].form.data[0][0].size(); k++)
+            {
+                for (int l = 0; l < it.one_state_results[i].form.data[0][0][0].size(); l++)
+                {
+                    cout<<setw(10)<<fixed<<real(it.one_state_results[i].form.data[0][0][k][l]);
+                }
+                cout<<endl;
+            }
+            cout<<endl;
         }
         cout<<endl;
     }
-    
-    /*   Pxy p(0, 0);
-     Interaction interaction(hilbert_space, p);
-     interaction.decorateState();
-     interaction.buildKineticMatrix();
-     interaction.build2bodyMatrix();
-     Solver diagonalize(interaction);
-     diagonalize.diagonalize();
-     Measurement measurement(diagonalize, hilbert_space, ham);
-     measurement.measure();*/
-    
     
     return 0;
 }
