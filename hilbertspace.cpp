@@ -59,11 +59,12 @@ void HilbertSpace::buildStateMap()
 // below are some auxiliary functions, don't touch if you are not sure you understand it
 /////////////////////////////////////////////////////////////////////////////////////////
 
+
+
 void HilbertSpace::generateHaldaneOrbList()
 {
     int norb_max = (int)ham.max_norb;
     size_t pbc_type = ham.pbc_type;
-    double aspect2 = ham.aspect2;
     bool even1, even2;
     
     vector<Orbital> raworblist;
@@ -100,18 +101,17 @@ void HilbertSpace::generateHaldaneOrbList()
             
             Orbital temporb1(i, j, -1);
             
-            double a1 = sqrt(aspect2);
-            double a2 = 1./a1;
-            
-            temporb1.radius2 = a1 * i * i + a2 * j * j;
-            
+            temporb1.k = ham.computeK(i, j);
+            temporb1.radius2 = pow(temporb1.k.first, 2) + pow(temporb1.k.second, 2);
             raworblist.push_back(temporb1);
         }
     
     
     sort(raworblist.begin(), raworblist.end(),
          [](const Orbital & a, const Orbital & b) -> bool
-         {return a.radius2 < b.radius2; });
+         {
+             return a.radius2 < b.radius2;
+         });
     cout<<"=================================================="<<endl;
     
     
@@ -143,7 +143,6 @@ void HilbertSpace::generateHaldaneOrbList()
         cout <<"Error in orbital generation: "<<semiraworblist.size()<<" orbitals are kept."<<endl;
         abort();
     }
-    for(auto itt : semiraworblist) cout<<itt<<" "<<itt.radius2<<endl;
     
     for(auto it = semiraworblist.begin(); it != semiraworblist.end(); it++)
     {
@@ -195,15 +194,13 @@ void HilbertSpace::computeFacHaldane()
     double check_fac_sum = 0;
     for (auto it : orbital_list) if (it.spin == 1)
         check_fac_sum += pow(it.fac, 2);
+    cout<<"Orbital list: "<<endl;
+    for (auto it : orbital_list)
+    {
+        cout<<fixed<<it<<"\tfac: "<<it.fac<<"\t"<<"kx = "<<it.k.first<<"\tky = "<<it.k.second<<endl;
+        
+    }
     cout<<"Sum of fac's: "<<check_fac_sum<<endl;
-    /////////////////////////////////////////////////
-    double a1 = sqrt(ham.aspect2);
-    double a2 = 1./a1;
-    
-    ham.epsilon_kx = sqrt(a1/r2_max);
-    ham.epsilon_ky = sqrt(a2/r2_max);
-    
-    cout<<"epsilon_kx: "<<ham.epsilon_kx<<" epsilon_ky: "<<ham.epsilon_ky<<endl;
 }
 
 Pxy computeMomentum(CompactState &cstate, vector<Orbital>& orbital_list)

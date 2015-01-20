@@ -14,7 +14,7 @@ void lanczos_diag(int dim, int nevec, void (*matvec) (int*, double*, double*, bo
 {
 	double *eval = new double[nevec];
 	double *vari = new double[nevec];
-	int *number;
+	int *number = nullptr;
 	double *reso = new double;
 	double *evec = new double[nevec * dim];
 	
@@ -50,7 +50,7 @@ void lanczos_diag(int dim, int nevec, void (*matvec) (int*, double*, double*, bo
 {
     double *eval = new double[nevec];
     double *vari = new double[nevec];
-    int *number;
+    int *number = nullptr;
     double *reso = new double;
     double *evec = new double[nevec * dim];
     lanczos_diag_rs_(&dim, &nevec, matvec, eval, evec, vari, number, reso, &maxstep, &report, &seed);
@@ -74,7 +74,7 @@ void lanczos_diag(int dim, int nevec, void (*matvec) (int*, complex<double>  *, 
 {
     double *eval = new double[nevec];
     double *vari = new double[nevec];
-    int *number;
+    int *number = nullptr;
     double *reso = new double;
     complex<double>  *evec = new complex<double> [nevec * dim];
     lanczos_diag_ch_(&dim, &nevec, matvec, eval, evec, vari, number, reso, &maxstep, &report, &seed);
@@ -109,7 +109,7 @@ void lanczos_diag(int dim, int nevec, void (*matvec) (int*, complex<double>  *, 
 {
     double *eval = new double[nevec];
     double *vari = new double[nevec];
-    int *number;
+    int *number = nullptr;
     double *reso = new double;
     
     complex<double>  *evec = new complex<double> [nevec * dim];

@@ -16,7 +16,7 @@ void Measurement::measure()//This function is what we modify the most
     {
         measureDensity(i);
         measureSz(i);
-        measureForm(i);
+//        measureForm(i);
     }
 }
 

@@ -29,20 +29,31 @@ struct Pxy
 struct Orbital
 {
     char spin;	//In spin 1/2 case, one sets 1 for up spin and 2 for down spin.
+    // k is the real momentum (kx, ky) : double; p is the nominal momentum (I, J) : int
     Pxy p;
+    pair<double, double> k; //The real, rescaled momentum
     double fac;
     double radius2;
     
     bool operator== (const Orbital &rhs) const
-    { return p == rhs.p && spin == rhs.spin; }
+    {
+        return p == rhs.p && spin == rhs.spin;
+    }
     
     Orbital operator+ (const Orbital &rhs) const
-    {Orbital temp(p.px+rhs.p.px, p.py+rhs.p.py, spin+rhs.spin); return temp;}
+    {
+        Orbital temp(p.px+rhs.p.px, p.py+rhs.p.py, spin+rhs.spin);
+        return temp;
+    }
     
     Orbital(){fac = 0; radius2 = 0;}
     
     Orbital(int px, int py, char spin)
-    { p.px = px, p.py = py, this->spin = spin; fac = 0; radius2 = 0;}
+    {
+        p.px = px, p.py = py, this->spin = spin;
+        fac = 0;
+        radius2 = 0;
+    }
     
     
 };

@@ -28,13 +28,14 @@ class Hamiltonian
     friend class Measurement;
     double U, V1, vf, k0, delta; // interaction parameters
     size_t norb, nele, max_norb, pbc_type; // geometry parameters
-    double epsilon_kx, epsilon_ky, aspect2; // geomatry parameters
+    double epsilon_Ix, epsilon_Iy, epsilon_Jx, epsilon_Jy, center_x, center_y; // geomatry parameters
     int lanczos_ne; // problem parameter
     int MaxLapackSize;
     
 public:
     void getParameters(); // This method can be overloaded
     size_t getNorb() {return norb;}
+    pair<double, double> computeK(int i, int j);
 };
 
 #endif /* defined(__ED_solver__hamiltonian__) */

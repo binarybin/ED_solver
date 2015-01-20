@@ -13,15 +13,27 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 ostream& operator<<(ostream& os, Pxy& p)
-{ os << "Px = " << p.px << "\tPy = " << p.py; return os; }
+{
+    os << "Px = " << p.px << "\tPy = " << p.py;
+    return os;
+}
+
+
 ostream& operator<<(ostream& os, const Pxy& p)
-{ os << "Px = " << p.px << "\tPy = " << p.py; return os; }
+{
+    os << "Px = " << p.px << "\tPy = " << p.py;
+    return os;
+}
+
+
 ostream& operator<<(ostream& os, Orbital& orb)
 {
     os << "Px = " << orb.p.px << "\tPy = " << orb.p.py\
     << "\t Spin: " << (int)orb.spin;
     return os;
 }
+
+
 ostream& operator<<(ostream& os, const Orbital& orb)
 {
     os << "Px = " << orb.p.px << "\tPy = " << orb.p.py\

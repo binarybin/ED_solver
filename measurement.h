@@ -93,7 +93,6 @@ public:
     void measurePwave(){};
     void measureForm(int num);
     
-    
     void measure();
     
 private: //auxiliary functions

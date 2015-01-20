@@ -18,8 +18,6 @@ void Interaction::decorateState()
         reverse_state_map[cstates[i].to_ulong()] = i;
         state_list.push_back(temp);
     }
-//    for (auto it : state_list)
-//        cout<<it.state_id<<" "<<it.cstate<<endl;
 }
 
 void Interaction::buildKineticMatrix()
@@ -45,13 +43,13 @@ void Interaction::buildKineticMatrix()
                 // and 1 filling, which means the 2 signs in fermionic second
                 // quantized form are the same and they multiply to 1
 
-                Pxy tempp = hilbert_space.orbital_list[i].p;
+                pair<double, double> temp_k = hilbert_space.orbital_list[i].k;
                 if (it.cstate[i])
-                    mat_ele.amplitude = complex<double>(ham.vf*ham.epsilon_kx*tempp.px,-ham.vf*ham.epsilon_ky*tempp.py)
-                    + complex<double>(ham.delta * ham.epsilon_ky*tempp.py,  ham.delta * ham.epsilon_kx * tempp.px);
+                    mat_ele.amplitude = complex<double>(ham.vf*temp_k.first, -ham.vf*temp_k.second)
+                    + complex<double>(ham.delta * temp_k.second,  ham.delta * temp_k.first);
                 else
-                    mat_ele.amplitude = complex<double>(ham.vf*ham.epsilon_kx*tempp.px, ham.vf*ham.epsilon_ky*tempp.py)
-                    + complex<double>(ham.delta * ham.epsilon_ky*tempp.py, -ham.delta * ham.epsilon_kx * tempp.px);
+                    mat_ele.amplitude = complex<double>(ham.vf*temp_k.first, ham.vf*temp_k.second)
+                    + complex<double>(ham.delta * temp_k.second, -ham.delta * temp_k.first);
                 if(abs(real(mat_ele.amplitude))>SmallDouble || abs(imag(mat_ele.amplitude))>SmallDouble)
                     matrix.push_back(mat_ele);
                 
@@ -109,17 +107,14 @@ void Interaction::build2bodyMatrix()
                                 MatEle mat_ele;
                                 mat_ele.bra = it.state_id;
                                 mat_ele.ket = newid;
-                                double amplitude=ham.norb/8.0*ham.V1*((orblist[new1].p.px*ham.epsilon_kx-orblist[pos1].p.px*ham.epsilon_kx)*\
-                                                                      (orblist[new1].p.px*ham.epsilon_kx-orblist[pos1].p.px*ham.epsilon_kx)+\
-                                                                      (orblist[new1].p.py*ham.epsilon_ky-orblist[pos1].p.py*ham.epsilon_ky)*\
-                                                                      (orblist[new1].p.py*ham.epsilon_ky - orblist[pos1].p.py*ham.epsilon_ky))\
-                                *orblist[new1].fac*orblist[new2].fac*orblist[pos1].fac*orblist[pos2].fac;
+
+                                pair<double, double> q = ham.computeK(orblist[new1].p.px - orblist[pos1].p.px, orblist[new1].p.py - orblist[pos1].p.py); // exchange momentum
+                                double amplitude = ham.norb/8.0*ham.V1 * (pow(q.first, 2) + pow(q.second, 2)) * orblist[new1].fac*orblist[new2].fac*orblist[pos1].fac*orblist[pos2].fac;
                                 
-                                if (sign_counter % 2 == 0) {
+                                if (sign_counter % 2 == 0)
                                     mat_ele.amplitude = amplitude;
-                                } else {
+                                else
                                     mat_ele.amplitude = -amplitude;
-                                }
                                 
                                 
                                 if(abs(real(amplitude))>SmallDouble || abs(imag(amplitude))>SmallDouble)
@@ -150,19 +145,14 @@ void Interaction::build2bodyMatrix()
                                 MatEle mat_ele;
                                 mat_ele.bra = it.state_id;
                                 mat_ele.ket = newid;
-                                double amplitude=ham.norb/8.0*ham.V1*((orblist[new1].p.px*ham.epsilon_kx-orblist[pos1].p.px*ham.epsilon_kx)*\
-                                                                      (orblist[new1].p.px*ham.epsilon_kx-orblist[pos1].p.px*ham.epsilon_kx)+\
-                                                                      (orblist[new1].p.py*ham.epsilon_ky-orblist[pos1].p.py*ham.epsilon_ky)*\
-                                                                      (orblist[new1].p.py*ham.epsilon_ky - orblist[pos1].p.py*ham.epsilon_ky))\
-                                *orblist[new1].fac*orblist[new2].fac*orblist[pos1].fac*orblist[pos2].fac+\
-                                ham.U*ham.norb/8.0*orblist[pos1].fac*orblist[pos2].fac*orblist[new1].fac*orblist[new2].fac;
                                 
-                                if (sign_counter % 2 == 0) {
+                                pair<double, double> q = ham.computeK(orblist[new1].p.px - orblist[pos1].p.px, orblist[new1].p.py - orblist[pos1].p.py);
+                                double amplitude = ham.norb/8.0*(ham.U + ham.V1 * (pow(q.first, 2) + pow(q.second, 2))) * orblist[new1].fac*orblist[new2].fac*orblist[pos1].fac*orblist[pos2].fac;
+                                
+                                if (sign_counter % 2 == 0)
                                     mat_ele.amplitude = amplitude;
-                                } else {
+                                else
                                     mat_ele.amplitude = -amplitude;
-                                }
-                                
                                 
                                 if(abs(real(amplitude))>SmallDouble || abs(imag(amplitude))>SmallDouble)
                                 {
@@ -223,17 +213,13 @@ void Interaction::build2bodyMatrix()
                                 MatEle mat_ele;
                                 mat_ele.bra = it.state_id;
                                 mat_ele.ket = newid;
-                                double amplitude=ham.V1*ham.norb/8.0*((orblist[pos1].p.px*ham.epsilon_kx-orblist[new1].p.px*ham.epsilon_kx)*\
-                                                                      (orblist[pos1].p.px*ham.epsilon_kx-orblist[new1].p.px*ham.epsilon_kx)+\
-                                                                      (orblist[pos1].p.py*ham.epsilon_ky-orblist[new1].p.py*ham.epsilon_ky)*\
-                                                                      (orblist[pos1].p.py*ham.epsilon_ky - orblist[new1].p.py*ham.epsilon_ky))\
-                                *orblist[pos1].fac*orblist[pos2].fac*orblist[new1].fac*orblist[new2].fac;
+                                pair<double, double> q = ham.computeK(orblist[new1].p.px - orblist[pos1].p.px, orblist[new1].p.py - orblist[pos1].p.py);
+                                double amplitude = ham.norb/8.0*ham.V1 * (pow(q.first, 2) + pow(q.second, 2)) * orblist[new1].fac*orblist[new2].fac*orblist[pos1].fac*orblist[pos2].fac;
                                 
-                                if (sign_counter % 2 == 0) {
+                                if (sign_counter % 2 == 0)
                                     mat_ele.amplitude = amplitude;
-                                } else {
+                                else
                                     mat_ele.amplitude = -amplitude;
-                                }
                                 
                                 if(abs(real(amplitude))>SmallDouble || abs(imag(amplitude))>SmallDouble) {
                                     temp_mat_ele_list[mat_ele.ket] += mat_ele.amplitude;
@@ -261,18 +247,13 @@ void Interaction::build2bodyMatrix()
                                 MatEle mat_ele;
                                 mat_ele.bra = it.state_id;
                                 mat_ele.ket = newid;
-                                double amplitude=ham.V1*ham.norb/8.0*((orblist[pos1].p.px*ham.epsilon_kx-orblist[new1].p.px*ham.epsilon_kx)*\
-                                                                      (orblist[pos1].p.px*ham.epsilon_kx-orblist[new1].p.px*ham.epsilon_kx)+\
-                                                                      (orblist[pos1].p.py*ham.epsilon_ky-orblist[new1].p.py*ham.epsilon_ky)*\
-                                                                      (orblist[pos1].p.py*ham.epsilon_ky - orblist[new1].p.py*ham.epsilon_ky))\
-                                *orblist[pos1].fac*orblist[pos2].fac*orblist[new1].fac*orblist[new2].fac+\
-                                ham.U*ham.norb/8.0*orblist[pos1].fac*orblist[pos2].fac*orblist[new1].fac*orblist[new2].fac;
+                                pair<double, double> q = ham.computeK(orblist[new1].p.px - orblist[pos1].p.px, orblist[new1].p.py - orblist[pos1].p.py);
+                                double amplitude = ham.norb/8.0*(ham.U + ham.V1 * (pow(q.first, 2) + pow(q.second, 2))) * orblist[new1].fac*orblist[new2].fac*orblist[pos1].fac*orblist[pos2].fac;
                                 
-                                if (sign_counter % 2 == 0) {
+                                if (sign_counter % 2 == 0)
                                     mat_ele.amplitude = amplitude;
-                                } else {
+                                else
                                     mat_ele.amplitude = -amplitude;
-                                }
                                 
                                 if(abs(real(amplitude))>SmallDouble || abs(imag(amplitude))>SmallDouble) {
                                     temp_mat_ele_list[mat_ele.ket] += mat_ele.amplitude;
