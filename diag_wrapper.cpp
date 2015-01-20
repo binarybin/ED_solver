@@ -9,7 +9,6 @@
 #include "diag_wrapper.h"
 
 #include <complex.h>
-#include <Accelerate/Accelerate.h>
 
 bool zheevpp(vector<vector<complex<double> > >& matrix, vector<double>& evals, vector<ch_eigenvector>& evecs, int nevecs)
 // The interface should be fixed for different implementations.
