@@ -23,8 +23,8 @@ bool zheevpp(vector<vector<complex<double> > >& matrix, vector<double>& evals, v
     for (int row = 0; row < size; row++)
     for (int col = 0; col < size; col++)
     {
-        mat[row * size + col].real = real(matrix[row][col]);
-        mat[row * size + col].imag = imag(matrix[row][col]);
+        mat[col * size + row].real = real(matrix[row][col]);
+        mat[col * size + row].imag = imag(matrix[row][col]);
     }
     
     double *Evals = new double[size];
@@ -45,7 +45,7 @@ bool zheevpp(vector<vector<complex<double> > >& matrix, vector<double>& evals, v
     {
         for (int j = 0; j < size; j++)
         {
-            evecs[i].eigenvector[j] = mat[i*size + j].real + complex<double>(0, 1) * mat[j*size + i].imag ; //I may have mixed up i and j
+            evecs[i].eigenvector[j] = mat[j*size + i].real + complex<double>(0, 1) * mat[i*size + j].imag ; //I may have mixed up i and j
         }
         evals[i] = Evals[i];
     }

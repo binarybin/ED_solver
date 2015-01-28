@@ -10,7 +10,7 @@
 
 void Hamiltonian::getParameters()
 {
-    std::cout<<"Please input parameters:\n U, V1, Vf, delta, Max Norb, PBC, Ne, Nev, I_x, I_y, J_x, J_y, C_x, C_y, MaxLapackSize" <<std::endl;
+    std::cout<<"Please input parameters:\n U, V1, Vf, delta, Max Norb, PBC, Ne (999 for half-filling), Nev, I_x, I_y, J_x, J_y, C_x, C_y, MaxLapackSize" <<std::endl;
 
     std::cin>>U>>V1>>vf>>delta>>max_norb>>pbc_type>>nele>>lanczos_ne>>epsilon_Ix>>epsilon_Iy>>epsilon_Jx>>epsilon_Jy>>center_x>>center_y>>MaxLapackSize;
 }
