@@ -22,6 +22,7 @@ void lanczos_diag(int dim, int nevec, void (*matvec) (int*, complex<double> *, c
 
 
 // Declaration of the interface to the corresponding Fortran routine
+
 extern "C" void lanczos_diag_rs_(int *n, int *nevec, void (*matvec) (int*, double*, double*, bool*), double *eval, double *evec, double *variance, int *number, double *resolution, int *maxstep, int *report, int *seed);
 
 extern "C" void lanczos_diag_ch_(int *n, int *nevec, void (*matvec) (int*, complex<double> *, complex<double> *, bool*), double *eval, complex<double>  *evec, double *variance, int *number, double *resolution, int *maxstep, int *report, int *seed);

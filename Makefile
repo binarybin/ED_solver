@@ -1,7 +1,7 @@
-CC=g++
-CFLAGS=-c -g -Wall -Wuninitialized -Wno-reorder -O3 -std=c++11
+CC=icc
+CFLAGS=-c -Wall -Wuninitialized -Wno-reorder -Wno-sign-compare -O3 -std=c++11
 LDFLAGS=
-LFLAGS=-lblas -llapack -llanczos -L/usr/local/gfortran/lib -lgfortran
+LFLAGS= -lgfortran -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -llanczos
 SOURCES=hamiltonian.cpp hilbertspace.cpp interaction.cpp lanczos.cpp main.cpp measurement.cpp output.cpp solver.cpp diag_wrapper.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=ED_solver
@@ -9,7 +9,7 @@ EXECUTABLE=ED_solver
 all: $(SOURCES) $(EXECUTABLE) $(depend)
 	
 $(EXECUTABLE): $(OBJECTS) 
-	$(CC) $(LFLAGS) $(OBJECTS) -o $@
+	$(CC) $(OBJECTS) $(LFLAGS) -o $@
 
 .cpp.o:
 	$(CC) $(CFLAGS) $< -o $@

@@ -26,6 +26,7 @@ class Hamiltonian
     friend class Interaction;
     friend class Solver;
     friend class Measurement;
+public:
     double U, V1, vf, k0, delta; // interaction parameters
     size_t norb, nele, max_norb, pbc_type; // geometry parameters
     double epsilon_Ix, epsilon_Iy, epsilon_Jx, epsilon_Jy, center_x, center_y; // geomatry parameters

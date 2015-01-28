@@ -7,35 +7,30 @@
 //
 
 #include "diag_wrapper.h"
-
+#include "mkl_lapacke.h"
 #include <complex.h>
-#include <Accelerate/Accelerate.h>
 
 bool zheevpp(vector<vector<complex<double> > >& matrix, vector<double>& evals, vector<ch_eigenvector>& evecs, int nevecs)
 // The interface should be fixed for different implementations.
 // nevecs = 0 gives no eigenvectors
 // evec[n] gives the nth eigenvector
-// This version is the gnu lapacke implementation
+// This version is the Intel Lapacke implementation
+// Tested to be working on della.princeton.edu
 {
-    __CLPK_integer size = matrix.size();
-    __CLPK_doublecomplex *mat = new __CLPK_doublecomplex[size*size];
+    size_t size = matrix.size();
+    MKL_Complex16 *mat = new MKL_Complex16[size*size];
     
     for (int row = 0; row < size; row++)
     for (int col = 0; col < size; col++)
     {
-        mat[row * size + col].r = real(matrix[row][col]);
-        mat[row * size + col].i = imag(matrix[row][col]);
+        mat[col * size + row].real = real(matrix[row][col]);
+        mat[col * size + row].imag = imag(matrix[row][col]);
     }
     
-    __CLPK_integer lwork = 2 * size;
-    double *Evals = new double[lwork];
-    __CLPK_doublecomplex *work = new  __CLPK_doublecomplex[2*size];
-    double *rwork = new double[3 * size];
+    double *Evals = new double[size];
     int info;
-    char tempV = 'V';
-    char tempU = 'U';
     
-    zheev_(&tempV, &tempU, &size, mat, &size, Evals, work, &lwork, rwork, &info);
+    info = LAPACKE_zheev(LAPACK_ROW_MAJOR, 'V', 'L', size, mat, size, Evals);
     
     if (info > 0)
     {
@@ -50,7 +45,7 @@ bool zheevpp(vector<vector<complex<double> > >& matrix, vector<double>& evals, v
     {
         for (int j = 0; j < size; j++)
         {
-            evecs[i].eigenvector[j] = mat[i*size + j].r + complex<double>(0, 1) * mat[j*size + i].i ; //I may have mixed up i and j
+            evecs[i].eigenvector[j] = mat[j*size + i].real + complex<double>(0, 1) * mat[i*size + j].imag ; //I may have mixed up i and j
         }
         evals[i] = Evals[i];
     }
