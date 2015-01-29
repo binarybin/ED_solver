@@ -24,11 +24,11 @@ class Solver
     size_t Nev;
     
 public:
-    Solver(Interaction &o_interaction, Pxy o_p): interaction(o_interaction), p(o_p)
+    Solver(Interaction &o_interaction, Orbital o_orb): interaction(o_interaction), orb_sector(o_orb)
     {
         Nev = std::min((size_t)interaction.hilbert_space.ham.lanczos_ne, interaction.state_list.size());
     }
-    Pxy p;
+    Orbital orb_sector;
     vector<ch_eigenvector> ch_result;
     vector<rs_eigenvector> rs_result;
     vector<double> eigenvalues;

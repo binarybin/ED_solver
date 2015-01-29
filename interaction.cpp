@@ -10,7 +10,7 @@
 
 void Interaction::decorateState()
 {
-    auto cstates = hilbert_space.state_map.at(p);
+    auto cstates = hilbert_space.state_map.at(orb_sector);
     for(int i = 0; i < cstates.size(); i++)
     {
         State temp(cstates[i]);
@@ -18,45 +18,6 @@ void Interaction::decorateState()
         reverse_state_map[cstates[i].to_ulong()] = i;
         state_list.push_back(temp);
     }
-}
-
-void Interaction::buildKineticMatrix()
-{
-    MatEle mat_ele;
-    Hamiltonian& ham = hilbert_space.ham;
-    for (auto it : state_list)
-    {
-        for (int i = 0; i < ham.norb; i += 2)
-        {
-            if (it.cstate[i] != it.cstate[i + 1])
-            {
-                CompactState temp_cstate;
-                temp_cstate = it.cstate;
-                if (temp_cstate[i])
-                    temp_cstate[i] = 0, temp_cstate[i + 1] = 1;
-                else
-                    temp_cstate[i] = 1, temp_cstate[i + 1] = 0;
-                mat_ele.bra = it.state_id;
-                mat_ele.ket = reverse_state_map.at(temp_cstate.to_ulong());
-                
-                // Attention: 2 states that we operated on are neighbours with 0
-                // and 1 filling, which means the 2 signs in fermionic second
-                // quantized form are the same and they multiply to 1
-
-                pair<double, double> temp_k = hilbert_space.orbital_list[i].k;
-                if (it.cstate[i])
-                    mat_ele.amplitude = complex<double>(ham.vf*temp_k.first, -ham.vf*temp_k.second)
-                    + complex<double>(ham.delta * temp_k.second,  ham.delta * temp_k.first);
-                else
-                    mat_ele.amplitude = complex<double>(ham.vf*temp_k.first, ham.vf*temp_k.second)
-                    + complex<double>(ham.delta * temp_k.second, -ham.delta * temp_k.first);
-                if(abs(real(mat_ele.amplitude))>SmallDouble || abs(imag(mat_ele.amplitude))>SmallDouble)
-                    matrix.push_back(mat_ele);
-                
-            }
-        }
-    }
-
 }
 
 void Interaction::build2bodyMatrix()
