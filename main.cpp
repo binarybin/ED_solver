@@ -31,6 +31,7 @@ int main(int argc, const char * argv[])
     hilbert_space.buildStateMap();
     
     vector<Measurement> measure_list;
+    fstream fout(argv[1], fstream::out|fstream::app);
     for (auto p : hilbert_space.getStateMap())
 //    if (interest(p.first))
     {
@@ -45,31 +46,39 @@ int main(int argc, const char * argv[])
         diagonalize.diagonalize();
         Measurement measurement(diagonalize, hilbert_space, ham);
         measurement.measure();
-        measure_list.push_back(measurement);
+//        measure_list.push_back(measurement);
+        fout<<measurement.p<<endl;
+        cout<<measurement.p<<endl;
+        pair<double, double> kk = ham.computeK(measurement.p.px, measurement.p.py);
+        fout<<"Momentum: ("<<kk.first<<", "<<kk.second<<")"<<endl;
+        cout<<"Momentum: ("<<kk.first<<", "<<kk.second<<")"<<endl;
+        for (int i = 0; i < measurement.eigenvalues.size(); i++)
+        {
+            fout<<"Eigenvalues: "<<measurement.eigenvalues[i]<<endl;    
+            cout<<"Eigenvalues: "<<measurement.eigenvalues[i]<<endl;    
+        }
+        fout<<endl;
+        cout<<endl;
     }
     
-    fstream fout(argv[1], fstream::out|fstream::app);
+    fout.close();
     
 
     for (auto it : measure_list)
     {
         cout<<it.p<<endl;
-        fout<<it.p<<endl;
         pair<double, double> k = ham.computeK(it.p.px, it.p.py);
         cout<<"Momentum: ("<<k.first<<", "<<k.second<<")"<<endl;
         for (int i = 0; i < it.eigenvalues.size(); i++)
         {
             cout<<"Eigenvalue: "<<it.eigenvalues[i]<<endl;
-            fout<<"Eigenvalue: "<<it.eigenvalues[i]<<endl;
 //            cout<<"Density: "<<endl;
 //            for(auto it3 : it.one_state_results[i].occupation_nbr) cout<<it3<<" ";
 //            cout<<endl;
         }
-        fout<<endl;
         cout<<endl;
     }
 
-    fout.close();
     
     return 0;
 }
