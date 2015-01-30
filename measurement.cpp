@@ -14,8 +14,8 @@ void Measurement::measure()//This function is what we modify the most
 {
     for (int i = 0; i < solver.Nev; i++)
     {
-        measureDensity(i);
-        measureSz(i);
+//        measureDensity(i);
+//        measureSz(i);
 //        measureForm(i);
     }
 }

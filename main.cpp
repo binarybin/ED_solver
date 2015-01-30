@@ -28,8 +28,14 @@ int main(int argc, const char * argv[])
     hilbert_space.buildStateMap();
     
     vector<Measurement> measure_list;
+    
     for (auto orb : hilbert_space.getStateMap())
-    if (interest(orb.first))
+    {
+        cout<<"Sector "<<orb.first<<" Dimension: "<<orb.second.size()<<endl;
+    }
+    
+    for (auto orb : hilbert_space.getStateMap())
+ //   if (interest(orb.first))
     {
         cout<<"Sector "<<orb.first<<" Dimension: "<<orb.second.size()<<endl;
         pair<double, double> k = ham.computeK(orb.first.p.px, orb.first.p.py);
@@ -52,12 +58,12 @@ int main(int argc, const char * argv[])
         for (int i = 0; i < it.eigenvalues.size(); i++)
         {
             cout<<"Eigenvalue: "<<it.eigenvalues[i]<<endl;
-            cout<<"Density: "<<endl;
-            for(auto it3 : it.one_state_results[i].occupation_nbr) cout<<it3<<" ";
-            cout<<endl;
+//            cout<<"Density: "<<endl;
+//            for(auto it3 : it.one_state_results[i].occupation_nbr) cout<<it3<<" ";
+//            cout<<endl;
         }
         cout<<endl;
     }
-    
+
     return 0;
 }
