@@ -22,12 +22,11 @@ class Interaction
     unordered_map<unsigned long, unsigned> reverse_state_map;
     
     HilbertSpace &hilbert_space;
-    Pxy p;
+    Orbital orb_sector;
 public:
-    Interaction(HilbertSpace &o_hilbert_space, Pxy o_p): hilbert_space(o_hilbert_space), p(o_p){}
+    Interaction(HilbertSpace &o_hilbert_space, Orbital o_orb): hilbert_space(o_hilbert_space), orb_sector(o_orb){}
     vector<MatEle> matrix;
     void decorateState();
-    void buildKineticMatrix();
     void build2bodyMatrix();
 };
 

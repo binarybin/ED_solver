@@ -38,17 +38,18 @@ void HilbertSpace::buildPairMap()
 void HilbertSpace::buildStateMap()
 {
     CompactState cstate;
-    for (int i = 0; i < MaxOrbital; i++) {
+    for (int i = 0; i < MaxOrbital; i++)
+    {
         cstate[i] = 0;
     }
     for (int i = 0; i < ham.nele; i++) cstate[i] = 1;
-    Pxy p = computeMomentum(cstate, orbital_list);
-    state_map[p].push_back(cstate);
+    Orbital orb_prop = computeMomentumAndSpin(cstate, orbital_list);
+    state_map[orb_prop].push_back(cstate);
     while (csNotHighest(cstate, (int)ham.norb, (int)ham.nele))
     {
         csPlusplus(cstate, (int)ham.norb);
-        p = computeMomentum(cstate, orbital_list);
-        state_map[p].push_back(cstate);
+        orb_prop = computeMomentumAndSpin(cstate, orbital_list);
+        state_map[orb_prop].push_back(cstate);
     }
 }
 

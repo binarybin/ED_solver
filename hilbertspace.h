@@ -29,7 +29,7 @@ class HilbertSpace
     vector<Orbital> orbital_list;
     unordered_map<Orbital, size_t, Orbital_hasher> reverse_orbital_map;
     unordered_map<Orbital, vector<OrbPair>, Orbital_hasher> pair_map;
-    unordered_map<Pxy, vector<CompactState>, Pxy_hasher> state_map;
+    unordered_map<Orbital, vector<CompactState>, Orbital_hasher> state_map;
     
 public:
     HilbertSpace(Hamiltonian &o_ham): ham(o_ham){}
@@ -37,7 +37,7 @@ public:
     void buildReverseOrbitalMap();
     void buildPairMap();
     void buildStateMap();
-    unordered_map<Pxy, vector<CompactState>, Pxy_hasher>& getStateMap() {return state_map;}
+    unordered_map<Orbital, vector<CompactState>, Orbital_hasher>& getStateMap() {return state_map;}
     
 private: // some auxiliary functions
     void generateHaldaneOrbList();
@@ -47,6 +47,7 @@ private: // some auxiliary functions
 };
 
 Pxy computeMomentum(CompactState &cstate, vector<Orbital>& orbital_list);
+Orbital computeMomentumAndSpin(CompactState &cstate, vector<Orbital>& orbital_list);
 void csPlusplus(CompactState& cstate, int norb);
 bool csNotHighest(CompactState& cstate, int norb, int nele);
 

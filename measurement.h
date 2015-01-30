@@ -80,10 +80,10 @@ public:
     vector<OneStateMeasurement> one_state_results;
     PwaveSc pwave_results;
     vector<double> eigenvalues;
-    Pxy p;
+    Orbital orb_sector;
     
 
-    Measurement(Solver &o_solver, HilbertSpace &o_hilbert_space, Hamiltonian &o_ham) : hilbert_space(o_hilbert_space), solver(o_solver), ham(o_ham), pwave_results((int)solver.interaction.state_list.size()), p(o_solver.p), eigenvalues(solver.eigenvalues), max_qx(4), max_qy(4)
+    Measurement(Solver &o_solver, HilbertSpace &o_hilbert_space, Hamiltonian &o_ham) : hilbert_space(o_hilbert_space), solver(o_solver), ham(o_ham), pwave_results((int)solver.interaction.state_list.size()), orb_sector(o_solver.orb_sector), eigenvalues(solver.eigenvalues), max_qx(4), max_qy(4)
     {
         one_state_results.resize(solver.Nev, OneStateMeasurement((int)ham.norb, max_qx, max_qy));
     }

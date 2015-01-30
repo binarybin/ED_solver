@@ -12,9 +12,9 @@
 #include "measurement.h"
 #include "output.h"
 
-bool interest(const Pxy & p) // describe the interesting sectors
+bool interest(const Orbital & orb) // describe the interesting sectors
 {
-    if (p.px == 0 &&  p.py == 8) return true;
+    if (orb.p.px == 0 &&  orb.p.py == 8) return true;
     else return false;
 }
 
@@ -32,24 +32,23 @@ int main(int argc, const char * argv[])
     
     vector<Measurement> measure_list;
     fstream fout(argv[1], fstream::out|fstream::app);
-    for (auto p : hilbert_space.getStateMap())
-//    if (interest(p.first))
+    for (auto orb : hilbert_space.getStateMap())
+//    if (interest(orb.first))
     {
-        cout<<"Sector "<<p.first<<" Dimension: "<<p.second.size()<<endl;
-        pair<double, double> k = ham.computeK(p.first.px, p.first.py);
+        cout<<"Sector "<<orb.first<<" Dimension: "<<orb.second.size()<<endl;
+        pair<double, double> k = ham.computeK(orb.first.p.px, orb.first.p.py);
         cout<<"Momentum: ("<<k.first<<", "<<k.second<<")"<<endl;
-        Interaction interaction(hilbert_space, p.first); //This is the interaction matrix
+        Interaction interaction(hilbert_space, orb.first); //This is the interaction matrix
         interaction.decorateState();
-        interaction.buildKineticMatrix();
         interaction.build2bodyMatrix();
-        Solver diagonalize(interaction, p.first);
+        Solver diagonalize(interaction, orb.first);
         diagonalize.diagonalize();
         Measurement measurement(diagonalize, hilbert_space, ham);
         measurement.measure();
 //        measure_list.push_back(measurement);
-        fout<<measurement.p<<endl;
-        cout<<measurement.p<<endl;
-        pair<double, double> kk = ham.computeK(measurement.p.px, measurement.p.py);
+        fout<<measurement.orb_sector<<endl;
+        cout<<measurement.orb_sector<<endl;
+        pair<double, double> kk = ham.computeK(measurement.orb_sector.p.px, measurement.orb_sector.p.py);
         fout<<"Momentum: ("<<kk.first<<", "<<kk.second<<")"<<endl;
         cout<<"Momentum: ("<<kk.first<<", "<<kk.second<<")"<<endl;
         for (int i = 0; i < measurement.eigenvalues.size(); i++)
@@ -66,8 +65,8 @@ int main(int argc, const char * argv[])
 
     for (auto it : measure_list)
     {
-        cout<<it.p<<endl;
-        pair<double, double> k = ham.computeK(it.p.px, it.p.py);
+        cout<<it.orb_sector<<endl;
+        pair<double, double> k = ham.computeK(it.orb_sector.p.px, it.orb_sector.p.py);
         cout<<"Momentum: ("<<k.first<<", "<<k.second<<")"<<endl;
         for (int i = 0; i < it.eigenvalues.size(); i++)
         {
