@@ -71,9 +71,10 @@ bool zheevpp(vector<vector<complex<double> > >& matrix, vector<double>& evals, v
             evecs[i].eigenvector[j] /= Norm;
         }
     }
-    
     delete [] Evals;
     delete [] mat;
+    delete [] work;
+    delete [] rwork;
 
     return true;
 }
